@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { GoogleLogin } from "react-google-login";
+// import { GoogleLogin } from "react-google-login";
 import { AiFillHome, AiOutlineMenu } from "react-icons/ai";
 import { ImCancelCircle } from "react-icons/im";
 
@@ -40,7 +40,7 @@ const Sidebar = () => {
                 Log in to like and comment on videos
               </p>
               <div className="pr-4">
-                <GoogleLogin
+                {/* <GoogleLogin
                   clientId=""
                   render={(renderProps) => (
                     <button
@@ -54,7 +54,7 @@ const Sidebar = () => {
                   onSuccess={() => {}}
                   onFailure={() => {}}
                   cookiePolicy={"single-host-origin"}
-                />
+                /> */}
               </div>
             </div>
           )}

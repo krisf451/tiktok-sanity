@@ -10,6 +10,9 @@ const nextConfig = {
       "i.ibb.co",
     ],
   },
+  api: {
+    externalResolver: true,
+  },
 };
 
 module.exports = nextConfig;
