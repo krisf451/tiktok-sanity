@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { NextPage } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
-import { BsPlay, BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
-import { GoVerified } from "react-icons/go";
+import React, { useState, useEffect, useRef } from 'react';
+import { NextPage } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
+import { BsPlay, BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
+import { GoVerified } from 'react-icons/go';
 
-import { Video } from "../types";
+import { Video } from '../types';
 
 interface IProps {
   post: Video;
@@ -60,7 +60,7 @@ const VideoCard: NextPage<IProps> = ({ post }) => {
             <Link href="/">
               <div className="flex items-center gap-2">
                 <p className="flex gap-2 items-center md:text-lg font-bold text-primary">
-                  {post.postedBy.userName}{" "}
+                  {post.postedBy.userName}{' '}
                 </p>
                 <p>
                   <GoVerified className="text-blue-400 text-lg" />
@@ -84,7 +84,7 @@ const VideoCard: NextPage<IProps> = ({ post }) => {
               ref={videoRef}
               src={post.video.asset.url}
               loop
-              className="lg:w-[600px] h-[300px] md:h-[400px] lg:h-[530px] w-[200px] rounded-2xl cursor-pointer bg-gray-100"
+              className="lg:w-[600px] h-[300px] md:h-[400px] lg:h-[530px] w-[300px] rounded-2xl cursor-pointer bg-gray-100"
             ></video>
           </Link>
           {isHover && (

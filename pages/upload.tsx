@@ -1,35 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import axios from "axios";
-import { SanityAssetDocument } from "@sanity/client";
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { FaCloudUploadAlt } from 'react-icons/fa';
+import { MdDelete } from 'react-icons/md';
+import axios from 'axios';
+import { SanityAssetDocument } from '@sanity/client';
 
-import useAuthStore from "../store/auth";
-import { client } from "../utils/client";
+import useAuthStore from '../store/auth';
+import { client } from '../utils/client';
+
+import { topics } from '../utils/constants';
 
 const Upload = () => {
-  console.log("test change");
   const [isLoading, setIsLoading] = useState(false);
   const [videoAsset, setVideoAsset] = useState<
     SanityAssetDocument | undefined
   >();
   const [wrongFileType, setWrongFileType] = useState(false);
+  const [caption, setCaption] = useState('');
+  const [category, setCategory] = useState(topics[0].name);
+  const [savingPost, setSavingPost] = useState(false);
+  const { userProfile }: { userProfile: any } = useAuthStore();
   const {} = useAuthStore();
+  const router = useRouter();
 
   const uploadVideo = async (e: any) => {
     const selectedFile = e.target.files[0];
-    const fileTypes = ["video/mp4", "video/webm", "video/ogg"];
+    const fileTypes = ['video/mp4', 'video/webm', 'video/ogg'];
 
     if (fileTypes.includes(selectedFile.type)) {
       setIsLoading(true);
       client.assets
-        .upload("file", selectedFile, {
+        .upload('file', selectedFile, {
           contentType: selectedFile.type,
           filename: selectedFile.name,
         })
         .then((data) => {
-          console.log("TESTESTS", data);
+          console.log('TESTESTS', data);
           setVideoAsset(data);
           setIsLoading(false);
         });
@@ -38,9 +44,38 @@ const Upload = () => {
       setWrongFileType(true);
     }
   };
+
+  const handlePost = async () => {
+    if (caption && videoAsset?._id && category) {
+      setSavingPost(true);
+
+      const document = {
+        _type: 'post',
+        caption,
+        video: {
+          _type: 'file',
+          asset: {
+            _type: 'reference',
+            _ref: videoAsset._id,
+          },
+        },
+        userId: userProfile?._id,
+        postedBy: {
+          _type: 'postedBy',
+          _ref: userProfile?._id,
+        },
+        topic: category,
+      };
+
+      await axios.post('http://localhost:3000/api/post', document);
+
+      router.push('/');
+    }
+  };
+
   return (
     <div className="flex w-full h-full absolute left-0 top-[60px] mb-10 pt-10 lg:pt-20 bg-[#f8f8f8] justify-center">
-      <div className="bg-white rounded-lg xl:h-[80vh] flex gap-6 flex-wrap justify-center items-center p-14 pt-6">
+      <div className="bg-white rounded-lg xl:h-[80vh] w-[80%] flex gap-6 flex-wrap justify-center md:justify-between items-center p-14 pt-6">
         <div>
           <div>
             <p className="text-2xl font-bold">Upload Video</p>
@@ -98,11 +133,44 @@ const Upload = () => {
             )}
           </div>
         </div>
-      </div>
-      <div className="flex flex-col gap-3 pb-10">
-        <label htmlFor="caption" className="text-lg font-medium">
-          Caption
-        </label>
+        <div className="flex flex-col gap-3 pb-10">
+          <label htmlFor="caption" className="text-lg font-medium">
+            Caption
+          </label>
+          <input
+            type="text"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+            className="rounded outline-none text-lg border-2 border-gray-200 p-2"
+          />
+          <label className="text-lg font-medium">Choose A Category</label>
+          <select
+            onChange={(e) => setCategory(e.target.value)}
+            className="outline-none border-2 border-gray-200 text-lg capitalize lg:p-4 p-2 rounded cursor-pointer"
+          >
+            {topics.map((topic) => (
+              <option key={topic.name} value={topic.name}>
+                {topic.name}
+              </option>
+            ))}
+          </select>
+          <div className="flex gap-6 mt-10">
+            <button
+              onClick={() => {}}
+              type="button"
+              className="border-gray-300 border-2 text-lg font-medium p-2 rounded w-28 lg:w-44 outline-none"
+            >
+              Discard
+            </button>
+            <button
+              onClick={handlePost}
+              type="button"
+              className="bg-[#f51997] text-white text-lg font-medium p-2 rounded w-28 lg:w-44 outline-none"
+            >
+              Post
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
