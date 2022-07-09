@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
-import { BsPlay, BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
+import { BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
 import { GoVerified } from 'react-icons/go';
 
 import { Video } from '../types';
@@ -28,15 +28,11 @@ const VideoCard: NextPage<IProps> = ({ post }) => {
     }
   };
 
-  const onVolumePress = () => {
-    if (isVideoMuted) {
-      videoRef.current.volume = 1;
-      setIsVideoMuted(false);
-    } else {
-      videoRef.current.volume = 0;
-      setIsVideoMuted(true);
+  useEffect(() => {
+    if (videoRef?.current) {
+      videoRef.current.muted = isVideoMuted;
     }
-  };
+  }, [isVideoMuted]);
 
   return (
     <div className="flex flex-col border-b-2 border-gray-200 pb-6">
@@ -61,8 +57,6 @@ const VideoCard: NextPage<IProps> = ({ post }) => {
               <div className="flex items-center gap-2">
                 <p className="flex gap-2 items-center md:text-lg font-bold text-primary">
                   {post.postedBy.userName}{' '}
-                </p>
-                <p>
                   <GoVerified className="text-blue-400 text-lg" />
                 </p>
                 <p className="capitalize font-medium text-xs text-gray-500 hidden md:block">
@@ -79,7 +73,7 @@ const VideoCard: NextPage<IProps> = ({ post }) => {
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
         >
-          <Link href="/">
+          <Link href={`/detail/${post._id}`}>
             <video
               ref={videoRef}
               src={post.video.asset.url}
@@ -99,11 +93,11 @@ const VideoCard: NextPage<IProps> = ({ post }) => {
                 </button>
               )}
               {isVideoMuted ? (
-                <button onClick={onVolumePress} type="button">
+                <button onClick={() => setIsVideoMuted(false)} type="button">
                   <HiVolumeOff className="text-black text-2xl lg:text-4xl" />
                 </button>
               ) : (
-                <button onClick={onVolumePress} type="button">
+                <button onClick={() => setIsVideoMuted(true)} type="button">
                   <HiVolumeUp className="text-black text-2xl lg:text-4xl" />
                 </button>
               )}
