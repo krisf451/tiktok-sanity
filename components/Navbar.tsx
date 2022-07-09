@@ -9,13 +9,18 @@ import { IoMdAdd } from 'react-icons/io';
 
 import { createOrGetUser } from '../utils';
 import Logo from '../utils/tiktik-logo.png';
-
 import useAuthStore from '../store/auth';
+import { IUser } from '../types';
 
 const Navbar = () => {
+  const [user, setUser] = useState<IUser | null>();
   const { userProfile, addUser, removeUser } = useAuthStore();
   const [searchValue, setSearchValue] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    setUser(userProfile);
+  }, [userProfile]);
 
   const handleSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -68,14 +73,14 @@ const Navbar = () => {
                 <span className="hidden md:block">Upload</span>
               </button>
             </Link>
-            {userProfile.image && (
+            {user?.image && (
               <Link href="/">
                 <>
                   <Image
                     width={40}
                     height={40}
                     className="rounded-full cursor-pointer"
-                    src={userProfile.image}
+                    src={user?.image}
                   />
                 </>
               </Link>
